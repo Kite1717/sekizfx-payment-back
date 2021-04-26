@@ -148,35 +148,35 @@ app.post("/accept-payment", async (req, res) => {
   // name,
   // tc,
 
-  // db.Payments.update(
-  //   { amount: Number(clbData.Amnt), status: 1 },
-  //   {
-  //     where: {
-  //       processID: clbData.ProcessID,
-  //       type,
-  //       creatorUserId: Number(clbData.URefID),
-  //     },
-  //   }
-  // )
-  //   .then(() => {
-  //     return res.json({
-  //       status: 1,
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     return res.status(500).json({ err, msg: "DB error", status: 0 });
-  //   });
-
-  db.Data.create({ data: JSON.stringify(clbData) })
+  db.Payments.update(
+    { amount: Number(clbData.Amnt), status: 1 },
+    {
+      where: {
+        processID: clbData.ProcessID,
+        type,
+        creatorUserId: Number(clbData.URefID),
+      },
+    }
+  )
     .then(() => {
       return res.json({
         status: 1,
-        clbData,
       });
     })
     .catch((err) => {
       return res.status(500).json({ err, msg: "DB error", status: 0 });
     });
+
+  // db.Data.create({ data: JSON.stringify(clbData) })
+  //   .then(() => {
+  //     return res.json({
+  //       status: 1,
+  //       clbData,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     return res.status(500).json({ err, msg: "DB error", status: 0 });
+  //   });
 });
 
 //helper
