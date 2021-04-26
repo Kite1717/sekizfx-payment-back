@@ -108,7 +108,7 @@ app.get("/my-transfers/:userId", async (req, res) => {
 });
 
 app.post("/accept-payment", async (req, res) => {
-  const { data } = req.body;
+  const data = JSON.parse(req.body.data);
 
   const clbData = data[0];
 
@@ -167,7 +167,7 @@ app.post("/accept-payment", async (req, res) => {
   //     return res.status(500).json({ err, msg: "DB error", status: 0 });
   //   });
 
-  db.Data.create({ data: req.body.data[0].toString() })
+  db.Data.create({ data: data })
     .then(() => {
       return res.json({
         status: 1,
