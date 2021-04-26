@@ -27,7 +27,7 @@ const app = express.Router();
 //status
 //0 pending
 //1 success
-//2 cancel
+//2 time out
 
 //find user
 app.post("/deposit", async (req, res) => {
@@ -107,12 +107,60 @@ app.get("/my-transfers/:userId", async (req, res) => {
     });
 });
 
-app.post("/accept-deposit", async (req, res) => {
-  db.Data.create({ data: JSON.stringify(req.body) })
-    .then((transfers) => {
+app.post("/accept-payment", async (req, res) => {
+  const { data } = req.body;
+
+  const clbData = data[0];
+
+  // Deposit call back
+  //  [{"ProcessID":"test12345678","Type": "Deposit","Status": 1,"Amnt": 100,"URefID": "testUser12345","BCSubID": "APItest1234567890"}]
+
+  // WithDraw call back
+  //  [{"ProcessID":"test12345678","Type": "Draw","Status": 1,"Amnt": 100,"URefID": "testUser12345","BCSubID": "APItest1234567890"}]
+
+  // WithDraw cancel call back
+  // [{"ProcessID":"test12345678","Type": "Draw","Status": 0,"Amnt": 100,"URefID": "testUser12345","BCSubID": "APItest1234567890"}]
+
+  //0 deposit
+  //1 withdraw
+  //2 withdraw cancel
+  let type = -1;
+
+  if (clbData.Type === "Deposit") {
+    // yatırma başarılı
+    type = 0;
+  } else if (clbData.Type === "Draw" && clbData.Status === 1) {
+    // çekim başarılı
+    type = 1;
+  } else if (clbData.Type === "Draw" && clbData.Status === 0) {
+    // çekim iptal
+    type = 2;
+  }
+
+  // from,
+  // to,
+  // status: 0,
+  // type: 0,
+  // amount,
+  // creatorUserId: userId,
+  // createdAt: new Date(),
+  // processID: PGTransactionID,
+  // name,
+  // tc,
+
+  db.Payments.update(
+    { amount: clbData.Amnt, status: 1 },
+    {
+      where: {
+        processID: clbData.ProcessID,
+        type,
+        creatorUserId: clbData.URefID,
+      },
+    }
+  )
+    .then(() => {
       return res.json({
         status: 1,
-        transfers,
       });
     })
     .catch(() => {
