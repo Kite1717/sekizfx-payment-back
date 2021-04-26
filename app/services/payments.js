@@ -137,10 +137,6 @@ app.post("/accept-payment", async (req, res) => {
     type = 2;
   }
 
-  return res.json({
-    status: type,
-  });
-
   // from,
   // to,
   // status: 0,
@@ -158,7 +154,7 @@ app.post("/accept-payment", async (req, res) => {
       where: {
         processID: clbData.ProcessID,
         type,
-        creatorUserId: clbData.URefID,
+        creatorUserId: Number(clbData.URefID),
       },
     }
   )
@@ -167,8 +163,8 @@ app.post("/accept-payment", async (req, res) => {
         status: 1,
       });
     })
-    .catch(() => {
-      return res.status(500).json({ msg: "DB error", status: 0 });
+    .catch((err) => {
+      return res.status(500).json({ err, msg: "DB error", status: 0 });
     });
 });
 
