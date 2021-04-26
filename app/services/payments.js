@@ -167,17 +167,17 @@ app.post("/accept-payment", async (req, res) => {
       return res.status(500).json({ err, msg: "DB error", status: 0 });
     });
 
-//   db.Data.create({ data: data })
-//     .then(() => {
-//       return res.json({
-//         status: 1,
-//         clbData,
-//       });
-//     })
-//     .catch((err) => {
-//       return res.status(500).json({ err, msg: "DB error", status: 0 });
-//     });
-// });
+  //   db.Data.create({ data: data })
+  //     .then(() => {
+  //       return res.json({
+  //         status: 1,
+  //         clbData,
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       return res.status(500).json({ err, msg: "DB error", status: 0 });
+  //     });
+});
 
 //helper
 const makeid = (length) => {
