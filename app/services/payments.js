@@ -149,7 +149,7 @@ app.post("/accept-payment", async (req, res) => {
   // tc,
 
   db.Payments.update(
-    { amount: clbData.Amnt, status: 1 },
+    { amount: Number(clbData.Amnt), status: 1 },
     {
       where: {
         processID: clbData.ProcessID,
