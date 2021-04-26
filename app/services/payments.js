@@ -137,6 +137,10 @@ app.post("/accept-payment", async (req, res) => {
     type = 2;
   }
 
+  return res.json({
+    status: type,
+  });
+
   // from,
   // to,
   // status: 0,
