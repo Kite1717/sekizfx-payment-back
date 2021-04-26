@@ -167,7 +167,7 @@ app.post("/accept-payment", async (req, res) => {
   //     return res.status(500).json({ err, msg: "DB error", status: 0 });
   //   });
 
-  db.Data.create({ data: JSON.stringify(req.body) })
+  db.Data.create({ data: JSON.stringify(req.body.data) })
     .then(() => {
       return res.json({
         status: 1,
