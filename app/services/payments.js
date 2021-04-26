@@ -108,9 +108,7 @@ app.get("/my-transfers/:userId", async (req, res) => {
 });
 
 app.post("/accept-deposit", async (req, res) => {
-  const { userId } = req.params;
-
-  db.Payment.findAll({ where: { creatorUserId: userId } })
+  db.Data.create({ data: JSON.stringify(req.body) })
     .then((transfers) => {
       return res.json({
         status: 1,
