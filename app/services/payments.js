@@ -95,6 +95,7 @@ app.post("/deposit", async (req, res) => {
   //Jet Papara
   //Anında Mefete
 
+
   let PGTransactionID = makeid(15);
   let url = `${baseUrl}send?`;
 
@@ -106,6 +107,8 @@ app.post("/deposit", async (req, res) => {
     PGTransactionID: PGTransactionID.trim(),
     BCID,
   });
+
+  console.log(url,"wwwwwwwww")
   axios
     .get(url)
     .then((response) => {
@@ -148,6 +151,21 @@ app.get("/my-transfers/:userId", async (req, res) => {
   const { userId } = req.params;
 
   db.Payments.findAll({ where: { creatorUserId: userId } })
+    .then((transfers) => {
+      return res.json({
+        status: 1,
+        transfers: transfers.reverse(),
+      });
+    })
+    .catch(() => {
+      return res.status(500).json({ msg: "DB error", status: 0 });
+    });
+});
+
+
+app.get("/all-transfers", async (req, res) => {
+
+  db.Payments.findAll()
     .then((transfers) => {
       return res.json({
         status: 1,
