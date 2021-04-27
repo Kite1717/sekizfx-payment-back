@@ -50,6 +50,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
+      callbackIp: {
+        defaultvalue: "",
+        type: Sequelize.STRING,
+      },
     });
   },
 

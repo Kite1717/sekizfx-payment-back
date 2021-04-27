@@ -35,7 +35,7 @@ BCID : rQHncLtPIrWQRB5DrgorOJPiSO5fJy7axGdIX5SUoz1ZoUEY2GfTW7k9MyLwOXqUi2ujq3GCH
 
 
 
--------------------------BCSUBID
+-------------------------BCSUBID  SekizFX
 
 Anında Mefete BCSubID api key : APIlfMbLjPcJ7Tx3WN8c
 Anında Havale : APIvzIzTPV5RpuIMDhCX
