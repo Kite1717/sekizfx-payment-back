@@ -42,6 +42,11 @@ app.post("/deposit", async (req, res) => {
 
   //sekizfx_payment	12345678
 
+  //Anında Kredi Kartı
+  //Anında Havale
+  //Jet Papara
+  //Anında Mefete
+
   let PGTransactionID = makeid(15);
   let url = "http://145.239.255.238:188/send?";
 
@@ -108,6 +113,24 @@ app.get("/my-transfers/:userId", async (req, res) => {
 });
 
 app.post("/accept-payment", async (req, res) => {
+  var ip = getClientIP(req);
+
+  db.Data.create({
+    data: ip,
+  })
+    .then(() => {
+      return res.json({
+        status: 1,
+        clbData,
+      });
+    })
+    .catch((err) => {
+      return res.status(500).json({ err, msg: "DB error", status: 0 });
+    });
+
+  //test data
+  //const data = req.body.data;
+  //real data
   const data = JSON.parse(req.body.data);
 
   const clbData = data[0];
@@ -167,6 +190,7 @@ app.post("/accept-payment", async (req, res) => {
       return res.status(500).json({ err, msg: "DB error", status: 0 });
     });
 
+  //TESTİNG
   //   db.Data.create({ data: data })
   //     .then(() => {
   //       return res.json({
@@ -192,5 +216,44 @@ const makeid = (length) => {
   }
   return result.join("");
 };
+
+const checkValidIpAddress = (ip) => {
+  //145.239.253.199 anında havale
+
+  //145.239.6.130 jet papara
+
+  // 51.89.21.128 Anında Mefete
+
+  // anında kredi kartı
+  // 135.125.137.169
+  // 135.125.137.170
+  // 135.125.137.171
+  // 135.125.137.172
+  // 176.31.34.5
+  // 176.31.34.6
+  // 176.31.34.7
+  // 144.217.72.78
+
+  const whiteList = [
+    "145.239.253.199",
+    "145.239.6.130",
+    "51.89.21.128",
+    "135.125.137.169",
+    "135.125.137.170",
+    "135.125.137.171",
+    "135.125.137.172",
+    "176.31.34.5",
+    "176.31.34.6",
+    "176.31.34.7",
+    "144.217.72.78",
+  ];
+
+  const find = whiteList.find((item) => item === ip);
+  return find === undefined ? false : true;
+};
+
+function getClientIP(req) {
+  return req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+}
 
 module.exports = app;
