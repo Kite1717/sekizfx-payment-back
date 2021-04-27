@@ -63,6 +63,7 @@ app.post("/deposit", async (req, res) => {
   let BCID = "";
   let baseUrl = "";
 
+
   //security control
   if (from.id === 1 && from.key === ANINDA_KREDI_KARTI_BCSUBID) {
     BCID = ANINDA_KREDI_KARTI_BCID;
@@ -95,7 +96,7 @@ app.post("/deposit", async (req, res) => {
   //Anında Mefete
 
   let PGTransactionID = makeid(15);
-  let url = `${baseUrl}/send?`;
+  let url = `${baseUrl}send?`;
 
   url += querystring.stringify({
     BUID: userId.toString().trim(),
