@@ -164,7 +164,7 @@ app.get("/my-transfers/:userId", async (req, res) => {
 
 
 app.get("/all-transfers", async (req, res) => {
-
+console.log("asdasdasdas");
   db.Payments.findAll()
     .then((transfers) => {
       return res.json({
