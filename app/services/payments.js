@@ -108,7 +108,7 @@ app.post("/deposit", async (req, res) => {
     BCID,
   });
 
-  console.log(url,"wwwwwwwww")
+
   axios
     .get(url)
     .then((response) => {
@@ -137,7 +137,7 @@ app.post("/deposit", async (req, res) => {
       } else {
         return res
           .status(500)
-          .json({ msg: "Payment process error", status: 0 });
+          .json({ data: response.data, msg: "Payment process error", status: 0 });
       }
     })
     .catch((err) => {
