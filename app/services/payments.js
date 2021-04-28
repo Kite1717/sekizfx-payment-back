@@ -21,6 +21,9 @@ const axios = require("axios");
 const querystring = require("querystring");
 const app = express.Router();
 
+//Cron
+const CronJob = require("cron").CronJob;
+
 //**************Route Level 1
 
 // types
@@ -63,7 +66,6 @@ app.post("/deposit", async (req, res) => {
   let BCID = "";
   let baseUrl = "";
 
-
   //security control
   if (from.id === 1 && from.key === ANINDA_KREDI_KARTI_BCSUBID) {
     BCID = ANINDA_KREDI_KARTI_BCID;
@@ -95,7 +97,6 @@ app.post("/deposit", async (req, res) => {
   //Jet Papara
   //Anında Mefete
 
-
   let PGTransactionID = makeid(15);
   let url = `${baseUrl}send?`;
 
@@ -107,7 +108,6 @@ app.post("/deposit", async (req, res) => {
     PGTransactionID: PGTransactionID.trim(),
     BCID,
   });
-
 
   axios
     .get(url)
@@ -135,9 +135,11 @@ app.post("/deposit", async (req, res) => {
             return res.json({ msg: "DB error", status: 0 });
           });
       } else {
-        return res
-          .status(500)
-          .json({ data: response.data, msg: "Payment process error", status: 0 });
+        return res.status(500).json({
+          data: response.data,
+          msg: "Payment process error",
+          status: 0,
+        });
       }
     })
     .catch((err) => {
@@ -150,11 +152,14 @@ app.post("/deposit", async (req, res) => {
 app.get("/my-transfers/:userId", async (req, res) => {
   const { userId } = req.params;
 
-  db.Payments.findAll({ where: { creatorUserId: userId } })
+  db.Payments.findAll({
+    order: [["id", "DESC"]],
+    where: { creatorUserId: userId },
+  })
     .then((transfers) => {
       return res.json({
         status: 1,
-        transfers: transfers.reverse(),
+        transfers: transfers,
       });
     })
     .catch(() => {
@@ -162,14 +167,14 @@ app.get("/my-transfers/:userId", async (req, res) => {
     });
 });
 
-
 app.get("/all-transfers", async (req, res) => {
-console.log("asdasdasdas");
-  db.Payments.findAll()
+  db.Payments.findAll({
+    order: [["id", "DESC"]],
+  })
     .then((transfers) => {
       return res.json({
         status: 1,
-        transfers: transfers.reverse(),
+        transfers: transfers,
       });
     })
     .catch(() => {
@@ -314,5 +319,34 @@ const checkValidIpAddress = (ip) => {
 const getClientIP = (req) => {
   return req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 };
+
+//cron job detect time out transactions
+const job = new CronJob("0 */1 * * * *", function () {
+  const d = new Date();
+
+  db.Payments.findAll({
+    where: {
+      status: 0,
+    },
+  }).then((transfers) => {
+    console.log(transfers.length, "wwwwwwwwwwwww");
+    let detectedTransfers = [];
+    const now = new Date();
+    for (let i = 0; i < transfers.length; i++) {
+      const createdAt = new Date(transfers[i].createdAt);
+
+      if (now - createdAt > 86400000) {
+        detectedTransfers.push(transfers[i].processID);
+      }
+    }
+
+    db.Payments.update(
+      { status: 2 },
+      { where: { processID: detectedTransfers } }
+    );
+  });
+  console.log("At Ten Minutes:", d);
+});
+job.start();
 
 module.exports = app;
