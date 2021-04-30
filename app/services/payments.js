@@ -221,15 +221,18 @@ app.post("/withdraw", async (req, res) => {
     BCID,
   });
 
+
   axios
     .get(url)
     .then((response) => {
-      if (response.data.success) {
+      const q = JSON.stringify(response.data)
+      console.log(q.includes("false"),"wwwwwww")
+      if (q.includes("true")) {
         db.Payments.create({
           from: from.title,
           to,
           status: 0,
-          type: 0,
+          type: 1,
           amount,
           creatorUserId: userId,
           createdAt: new Date(),
@@ -254,7 +257,7 @@ app.post("/withdraw", async (req, res) => {
           msg: "Payment process error",
           status: 0,
         });
-      }
+      } 
     })
     .catch((err) => {
       return res
