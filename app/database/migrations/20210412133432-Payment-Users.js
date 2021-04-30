@@ -50,8 +50,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      callbackIp: {
-        defaultvalue: "",
+      iban: {
+        type: Sequelize.STRING,
+      },
+      bankId: {
         type: Sequelize.STRING,
       },
     });

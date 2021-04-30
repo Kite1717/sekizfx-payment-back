@@ -51,6 +51,12 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING,
       },
+      iban: {
+        type: DataTypes.STRING,
+      },
+      bankId: {
+        type: DataTypes.STRING,
+      },
     },
     {
       tableName: "payments",

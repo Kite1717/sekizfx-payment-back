@@ -149,6 +149,124 @@ app.post("/deposit", async (req, res) => {
     });
 });
 
+
+
+
+
+
+
+app.post("/withdraw", async (req, res) => {
+  const { name, userId, tc, amount, from, to ,iban,bankId} = req.body;
+
+  //security control
+
+  const ANINDA_HAVALE = payment_infos.ANINDA_HAVALE;
+  const ANINDA_HAVALE_BCID = payment_infos.ANINDA_HAVALE_BCID;
+  const ANINDA_HAVALE_BCSUBID = payment_infos.ANINDA_HAVALE_BCSUBID;
+
+  const JET_PAPARA = payment_infos.JET_PAPARA;
+  const JET_PAPARA_BCID = payment_infos.JET_PAPARA_BCID;
+  const JET_PAPARA_BCSUBID = payment_infos.JET_PAPARA_BCSUBID;
+
+  const ANINDA_MEFETE = payment_infos.ANINDA_MEFETE;
+  const ANINDA_MEFETE_BCID = payment_infos.ANINDA_MEFETE_BCID;
+  const ANINDA_MEFETE_BCSUBID = payment_infos.ANINDA_MEFETE_BCSUBID;
+
+  const ANINDA_KREDI_KARTI = payment_infos.ANINDA_KREDI_KARTI;
+  const ANINDA_KREDI_KARTI_BCID = payment_infos.ANINDA_KREDI_KARTI_BCID;
+  const ANINDA_KREDI_KARTI_BCSUBID = payment_infos.ANINDA_KREDI_KARTI_BCSUBID;
+
+  let BCID = "";
+  let baseUrl = "";
+
+  //security control
+  if (from.id === 1 && from.key === ANINDA_KREDI_KARTI_BCSUBID) {
+    BCID = ANINDA_KREDI_KARTI_BCID;
+    baseUrl = ANINDA_KREDI_KARTI;
+  } else if (from.id === 2 && from.key === ANINDA_HAVALE_BCSUBID) {
+    BCID = ANINDA_HAVALE_BCID;
+    baseUrl = ANINDA_HAVALE;
+  } else if (from.id === 3 && from.key === JET_PAPARA_BCSUBID) {
+    BCID = JET_PAPARA_BCID;
+    baseUrl = JET_PAPARA;
+  } else if (from.id === 4 && from.key === ANINDA_MEFETE_BCSUBID) {
+    BCID = ANINDA_MEFETE_BCID;
+    baseUrl = ANINDA_MEFETE;
+  } else {
+    return res.status(500).json({ msg: "SECURITY AUTH ERROR", status: 0 });
+  }
+
+ /* BUID={User ID}
+  BCSubID={Test Trader Api Key}
+  Name={User Name and Surname}
+  TC={User Turkish Identity}
+  IBAN={Bank IBAN,Papara No, Creditcard No}
+  DRefID={Draw TransactionID}
+  Amount={Draw Amount}
+  BanksID={Draw BanksID}
+  BCID={Test BCID}*/
+
+  let DRefID = makeid(15);
+  let url = `${baseUrl}send/uwdraw?`;
+
+  url += querystring.stringify({
+    BUID: userId.toString().trim(),
+    BCSubID: from.key,
+    Name: name.trim(),
+    TC: tc.toString().trim(),
+    IBAN:iban.toString().trim(),
+    DRefID: DRefID.trim(),
+    Amount:amount,
+    BanksID:bankId.toString().trim(),
+    BCID,
+  });
+
+  axios
+    .get(url)
+    .then((response) => {
+      if (response.data.success) {
+        db.Payments.create({
+          from: from.title,
+          to,
+          status: 0,
+          type: 0,
+          amount,
+          creatorUserId: userId,
+          createdAt: new Date(),
+          processID: DRefID,
+          name,
+          tc,
+          iban,
+          bankId,
+        })
+          .then(() => {
+            return res.json({
+              status: 1,
+              data: response.data,
+            });
+          })
+          .catch((err) => {
+            return res.json({ msg: "DB error", status: 0 });
+          });
+      } else {
+        return res.status(500).json({
+          data: response.data,
+          msg: "Payment process error",
+          status: 0,
+        });
+      }
+    })
+    .catch((err) => {
+      return res
+        .status(500)
+        .json({ err: err, msg: "Payment error", status: 0 });
+    });
+});
+
+
+
+
+
 app.get("/my-transfers/:userId", async (req, res) => {
   const { userId } = req.params;
 
