@@ -3,7 +3,7 @@ const app = express();
 const { sequelize } = require('./models/index');
 var cors = require('cors')
 // Settings
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4200;
 app.use(cors())
 // Middlewares
 app.use(express.json());
