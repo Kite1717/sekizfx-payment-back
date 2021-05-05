@@ -16,6 +16,10 @@ module.exports = {
   ANINDA_KREDI_KARTI_BCID: process.env.ANINDA_KREDI_KARTI_BCID,
   ANINDA_KREDI_KARTI_BCSUBID: process.env.ANINDA_KREDI_KARTI_BCSUBID,
 
+  ANINDA_BTC: process.env.ANINDA_BTC,
+  ANINDA_BTC_BCID: process.env.ANINDA_BTC_BCID,
+  ANINDA_BTC_BCSUBID: process.env.ANINDA_BTC_BCSUBID,
+
   whitelist: [
     process.env.IP_1,
     process.env.IP_2,
@@ -28,5 +32,6 @@ module.exports = {
     process.env.IP_9,
     process.env.IP_10,
     process.env.IP_11,
+    process.env.IP_12,
   ],
 };

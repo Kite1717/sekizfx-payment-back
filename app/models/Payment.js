@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       amount: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.REAL,
       },
       creatorUserId: {
         allowNull: false,
@@ -56,6 +56,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       bankId: {
         type: DataTypes.STRING,
+      },
+      txID: {
+        type: DataTypes.STRING,
+      },
+      btcAmt: {
+        type: DataTypes.REAL,
       },
     },
     {

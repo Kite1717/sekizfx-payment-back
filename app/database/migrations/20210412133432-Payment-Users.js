@@ -27,7 +27,7 @@ module.exports = {
       },
       amount: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.REAL,
       },
       creatorUserId: {
         allowNull: false,
@@ -56,6 +56,13 @@ module.exports = {
       bankId: {
         type: Sequelize.STRING,
       },
+      txID: {
+        type: Sequelize.STRING,
+      },
+      btcAmt: {
+        type: Sequelize.REAL,
+      },
+      
     });
   },
 
