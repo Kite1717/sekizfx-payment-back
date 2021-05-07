@@ -454,6 +454,7 @@ app.post("/accept-payment", async (req, res) => {
             where: {
               processID: clbData.ProcessID,
               type,
+              status : 0 ,
               creatorUserId: Number(clbData.URefID),
             },
           }
