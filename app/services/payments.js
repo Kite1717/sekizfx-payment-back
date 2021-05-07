@@ -321,18 +321,18 @@ app.post("/accept-payment", async (req, res) => {
   if (!checkValidIpAddress(ip)) {
     return res.status(500).json({ msg: "NOT VALID IP error", status: 0 });
   }
-  // db.Data.create({
-  //   data: ip,
-  // })
-  //   .then(() => {
-  //     return res.json({
-  //       status: 1,
-  //       clbData,
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     return res.status(500).json({ err, msg: "DB error", status: 0 });
-  //   });
+  db.Data.create({
+    data: ip,
+   })
+   .then(() => {
+     return res.json({
+        status: 1,
+       clbData,
+      });
+    })
+  .catch((err) => {
+     return res.status(500).json({ err, msg: "DB error", status: 0 });
+    });
 
   //test data
   // const data = req.body.data;
