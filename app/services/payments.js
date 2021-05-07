@@ -337,7 +337,7 @@ app.post("/accept-payment", async (req, res) => {
   //test data
   // const data = req.body.data;
   //real data
-  const data = JSON.parse(req.body.data);
+  const data = JSON.parse(req.body.data) ;
 
   const clbData = data[0];
 
@@ -547,9 +547,9 @@ const checkValidIpAddress = (ip) => {
 
   const whiteList = payment_infos.whitelist;
   //for local testing
-  // whiteList.push("::1");
-  // whiteList.push("::ffff:127.0.0.1");
-
+   whiteList.push("::1");
+   whiteList.push("::ffff:127.0.0.1");
+   whiteList.push('145.239.255.238')
   const find = whiteList.find((item) => item === ip);
   return find === undefined ? false : true;
 };
