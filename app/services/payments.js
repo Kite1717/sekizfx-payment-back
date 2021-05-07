@@ -318,9 +318,9 @@ app.get("/all-transfers", async (req, res) => {
 app.post("/accept-payment", async (req, res) => {
   const ip = getClientIP(req);
 
-  if (!checkValidIpAddress(ip)) {
+ /* if (!checkValidIpAddress(ip)) {
     return res.status(500).json({ msg: "NOT VALID IP error", status: 0 });
-  }
+  } */
   db.Data.create({
     data: ip,
    })
