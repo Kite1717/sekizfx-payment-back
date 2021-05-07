@@ -549,7 +549,7 @@ const checkValidIpAddress = (ip) => {
   //for local testing
    whiteList.push("::1");
    whiteList.push("::ffff:127.0.0.1");
-   whiteList.push('145.239.255.238')
+   whiteList.push('34.251.230.109')
   const find = whiteList.find((item) => item === ip);
   return find === undefined ? false : true;
 };
