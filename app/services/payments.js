@@ -333,7 +333,6 @@ app.post("/accept-payment", async (req, res) => {
   .catch((err) => {
      return res.status(500).json({ err, msg: "DB error", status: 0 });
     });
-
   //test data
   // const data = req.body.data;
   //real data
@@ -549,7 +548,7 @@ const checkValidIpAddress = (ip) => {
   //for local testing
    whiteList.push("::1");
    whiteList.push("::ffff:127.0.0.1");
-   whiteList.push('34.251.230.109')
+   whiteList.push('193.176.84.142')
   const find = whiteList.find((item) => item === ip);
   return find === undefined ? false : true;
 };
