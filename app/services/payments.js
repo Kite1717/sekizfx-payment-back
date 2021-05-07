@@ -318,9 +318,9 @@ app.get("/all-transfers", async (req, res) => {
 app.post("/accept-payment", async (req, res) => {
   const ip = getClientIP(req);
 
- /* if (!checkValidIpAddress(ip)) {
-    return res.status(500).json({ msg: "NOT VALID IP error", status: 0 });
-  } */
+
+
+  //ip log
   db.Data.create({
     data: ip,
    })
@@ -333,6 +333,11 @@ app.post("/accept-payment", async (req, res) => {
   .catch((err) => {
      return res.status(500).json({ err, msg: "DB error", status: 0 });
     });
+
+ /* if (!checkValidIpAddress(ip)) {
+    return res.status(500).json({ msg: "NOT VALID IP error", status: 0 });
+  } */
+  
   //test data
   // const data = req.body.data;
   //real data
@@ -482,6 +487,7 @@ app.post("/accept-payment", async (req, res) => {
         where: {
           processID: clbData.ProcessID,
           type,
+          status:0,
           creatorUserId: Number(clbData.URefID),
         },
       }
