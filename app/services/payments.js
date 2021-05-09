@@ -331,7 +331,7 @@ app.post("/accept-payment", async (req, res) => {
       });
     })
   .catch((err) => {
-     return res.status(500).json({ err, msg: "DB error", status: 0 });
+     return res.status(500).json({ err, msg: "DB error", status: 0, x : "asdasd" });
     });
 
  if (!checkValidIpAddress(ip)) {
