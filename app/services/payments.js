@@ -553,9 +553,9 @@ const checkValidIpAddress = (ip) => {
 
   const whiteList = payment_infos.whitelist;
   //for local testing
-   whiteList.push("::1");
-   whiteList.push("::ffff:127.0.0.1");
-   whiteList.push('193.176.84.142')
+  // whiteList.push("::1");
+   //whiteList.push("::ffff:127.0.0.1");
+   //whiteList.push('193.176.84.142')
   const find = whiteList.find((item) => item === ip);
   return find === undefined ? false : true;
 };
