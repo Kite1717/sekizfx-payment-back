@@ -327,7 +327,6 @@ app.post("/accept-payment", async (req, res) => {
    .then(() => {
      return res.json({
         status: 1,
-       clbData,
       });
     })
   .catch((err) => {
