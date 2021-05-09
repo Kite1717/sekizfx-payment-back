@@ -334,9 +334,9 @@ app.post("/accept-payment", async (req, res) => {
      return res.status(500).json({ err, msg: "DB error", status: 0 });
     });
 
- /* if (!checkValidIpAddress(ip)) {
+ if (!checkValidIpAddress(ip)) {
     return res.status(500).json({ msg: "NOT VALID IP error", status: 0 });
-  } */
+  } 
   
   //test data
   // const data = req.body.data;
