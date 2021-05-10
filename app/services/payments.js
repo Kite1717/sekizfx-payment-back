@@ -560,7 +560,17 @@ const checkValidIpAddress = (ip) => {
 };
 
 const getClientIP = (req) => {
-  return req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+
+  const ipRaw = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+
+  if(ipRaw.includes(","))
+  {
+
+    return ipRaw.split(",")[0]
+  }
+  else{
+    return ipRaw
+  }
 };
 
 //cron job detect time out transactions
