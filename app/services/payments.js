@@ -330,7 +330,7 @@ app.post("/accept-payment", async (req, res) => {
       });
     })
   .catch((err) => {
-     return res.status(500).json({ err, msg: "DB error", status: 0, x : "asdasd" });
+     return res.status(500).json({ err, msg: "DB error", status: 0});
     });
 
  if (!checkValidIpAddress(ip)) {
@@ -587,7 +587,7 @@ const job = new CronJob("0 */1 * * * *", function () {
       { where: { processID: detectedTransfers } }
     );
   });
-  console.log("At Ten Minutes:", d);
+  console.log("At One Minutes:", d);
 });
 job.start();
 
