@@ -37,7 +37,7 @@ const CronJob = require("cron").CronJob;
 
 //find user
 app.post("/deposit", async (req, res) => {
-  const { name, userId, tc, amount,btcAmt, from, to } = req.body;
+  const { name, userId, tc, amount, btcAmt, from, to } = req.body;
 
   //security control
 
@@ -83,13 +83,10 @@ app.post("/deposit", async (req, res) => {
   } else if (from.id === 4 && from.key === ANINDA_MEFETE_BCSUBID) {
     BCID = ANINDA_MEFETE_BCID;
     baseUrl = ANINDA_MEFETE;
-  } 
-  else if (from.id === 5 && from.key === ANINDA_BTC_BCSUBID) {
+  } else if (from.id === 5 && from.key === ANINDA_BTC_BCSUBID) {
     BCID = ANINDA_BTC_BCID;
     baseUrl = ANINDA_BTC;
-  }
-  
-  else {
+  } else {
     return res.status(500).json({ msg: "SECURITY AUTH ERROR", status: 0 });
   }
 
@@ -135,7 +132,6 @@ app.post("/deposit", async (req, res) => {
           processID: PGTransactionID,
           name,
           tc,
-
         })
           .then(() => {
             return res.json({
@@ -161,14 +157,8 @@ app.post("/deposit", async (req, res) => {
     });
 });
 
-
-
-
-
-
-
 app.post("/withdraw", async (req, res) => {
-  const { name, userId, tc, amount, from, to ,iban,bankId} = req.body;
+  const { name, userId, tc, amount, from, to, iban, bankId } = req.body;
 
   //security control
 
@@ -188,6 +178,10 @@ app.post("/withdraw", async (req, res) => {
   const ANINDA_KREDI_KARTI_BCID = payment_infos.ANINDA_KREDI_KARTI_BCID;
   const ANINDA_KREDI_KARTI_BCSUBID = payment_infos.ANINDA_KREDI_KARTI_BCSUBID;
 
+  const ANINDA_BTC = payment_infos.ANINDA_BTC;
+  const ANINDA_BTC_BCID = payment_infos.ANINDA_BTC_BCID;
+  const ANINDA_BTC_BCSUBID = payment_infos.ANINDA_BTC_BCSUBID;
+
   let BCID = "";
   let baseUrl = "";
 
@@ -204,11 +198,14 @@ app.post("/withdraw", async (req, res) => {
   } else if (from.id === 4 && from.key === ANINDA_MEFETE_BCSUBID) {
     BCID = ANINDA_MEFETE_BCID;
     baseUrl = ANINDA_MEFETE;
+  } else if (from.id === 5 && from.key === ANINDA_BTC_BCSUBID) {
+    BCID = ANINDA_BTC_BCID;
+    baseUrl = ANINDA_BTC;
   } else {
     return res.status(500).json({ msg: "SECURITY AUTH ERROR", status: 0 });
   }
 
- /* BUID={User ID}
+  /* BUID={User ID}
   BCSubID={Test Trader Api Key}
   Name={User Name and Surname}
   TC={User Turkish Identity}
@@ -226,19 +223,17 @@ app.post("/withdraw", async (req, res) => {
     BCSubID: from.key,
     Name: name.trim(),
     TC: tc.toString().trim(),
-    IBAN:iban.toString().trim(),
+    IBAN: iban.toString().trim(),
     DRefID: DRefID.trim(),
-    Amount:amount,
-    BanksID:bankId.toString().trim(),
+    Amount: amount,
+    BanksID: bankId.toString().trim(),
     BCID,
   });
-
 
   axios
     .get(url)
     .then((response) => {
-      const q = JSON.stringify(response.data)
-      console.log(q.includes("false"),"wwwwwww")
+      const q = JSON.stringify(response.data);
       if (q.includes("true")) {
         db.Payments.create({
           from: from.title,
@@ -269,7 +264,7 @@ app.post("/withdraw", async (req, res) => {
           msg: "Payment process error",
           status: 0,
         });
-      } 
+      }
     })
     .catch((err) => {
       return res
@@ -277,10 +272,6 @@ app.post("/withdraw", async (req, res) => {
         .json({ err: err, msg: "Payment error", status: 0 });
     });
 });
-
-
-
-
 
 app.get("/my-transfers/:userId", async (req, res) => {
   const { userId } = req.params;
@@ -318,29 +309,27 @@ app.get("/all-transfers", async (req, res) => {
 app.post("/accept-payment", async (req, res) => {
   const ip = getClientIP(req);
 
-
-
   //ip log
   db.Data.create({
     data: ip,
-   })
-   .then(() => {
-     return res.json({
+  })
+    .then(() => {
+      return res.json({
         status: 1,
       });
     })
-  .catch((err) => {
-     return res.status(500).json({ err, msg: "DB error", status: 0});
+    .catch((err) => {
+      return res.status(500).json({ err, msg: "DB error", status: 0 });
     });
 
- if (!checkValidIpAddress(ip)) {
+  if (!checkValidIpAddress(ip)) {
     return res.status(500).json({ msg: "NOT VALID IP error", status: 0 });
-  } 
-  
+  }
+
   //test data
   // const data = req.body.data;
   //real data
-  const data = JSON.parse(req.body.data) ;
+  const data = JSON.parse(req.body.data);
 
   const clbData = data[0];
 
@@ -363,21 +352,16 @@ app.post("/accept-payment", async (req, res) => {
     // yatırma başarılı
     type = 0;
   } else if (clbData.Type === "Draw") {
-
     type = 1;
     // çekim başarılı
-    if(clbData.Status === 1)
-    {
-
+    if (clbData.Status === 1) {
       status = 1;
-    }
-    else{ // çekim iptal  status = 2
+    } else {
+      // çekim iptal  status = 2
 
-      status = 2
+      status = 2;
     }
-    
-    
-  } 
+  }
 
   // from,
   // to,
@@ -390,108 +374,99 @@ app.post("/accept-payment", async (req, res) => {
   // name,
   // tc,
 
-
   /// BTC CALLBACK
   /*
   [{"ProcessID":"test12345678","Type": "Deposit","Status": 1,"Amnt": 100,
   "URefID": "testUser12345","BCSubID": "APItest1234567890","BTC":0.000123,
   "TxID":"1c6986e7c5096462958974b4ee8bf64f9bcabe8e8ecd0ef5e8c7571816b6addf"}]
   */
-  
- 
 
-  if(clbData.TxID !== null && clbData.TxID !== undefined) // btc payment system
-  {
+  if (clbData.TxID !== null && clbData.TxID !== undefined) {
+    // btc payment system
     db.Payments.findAll({
       order: [["id", "DESC"]],
       where: {
         type,
         processID: clbData.ProcessID,
         creatorUserId: Number(clbData.URefID),
-        txID: {   // dışardan gelen anlamını katar
-          [Op.ne]: null
-        }
-      }
-    }).then((pays)=>{
-
-      if(pays !== null && pays !== undefined && pays.length >0) // daha önceden işlem geçmiş
-      {
-        //dışarıdan gelen işlem
-        let lastPay = pays[0]
-        db.Payments.create({
-          from: lastPay.from,
-          to : lastPay.to,
-          status: 1,     
-          type: lastPay.type,
-          amount : Number(clbData.Amnt),
-          btcAmt : isNaN(Number(clbData.BTC))  ? 0 :Number(clbData.BTC),
-          creatorUserId: lastPay.creatorUserId,
-          createdAt: new Date(),
-          processID: lastPay.processID,
-          name :lastPay.name ,
-          tc : lastPay.tc,
-          txID:clbData.TxID
-        }).then(()=>{
-          return res.json({
-            status: 1,
-          });
-        }).catch((err)=>{
-          return res.status(500).json({ err, msg: "DB error", status: 0 });
-    
-        })
-
-      }
-      else{ /// bulamadıysa bu processID nin callbackdir dışarıdan değildir.
-        db.Payments.update(
-          {
-            amount: Number(clbData.Amnt),
-            status: status !== null ? status : 1,
-            txID : clbData.TxID,
-            btcAmt : isNaN(Number(clbData.BTC))  ? 0 :Number(clbData.BTC),
-          },
-          {
-            where: {
-              processID: clbData.ProcessID,
-              type,
-              status : 0 ,
-              creatorUserId: Number(clbData.URefID),
-            },
-          }
-        )
-          .then(() => {
-            return res.json({
-              status: 1,
-            });
-          })
-          .catch((err) => {
-            return res.status(500).json({ err, msg: "DB error", status: 0 });
-          });
-
-      }
-    }).catch((err)=>{
-      return res.status(500).json({ err, msg: "DB error", status: 0 });
-
+        txID: {
+          // dışardan gelen anlamını katar
+          [Op.ne]: null,
+        },
+      },
     })
-
-  }
-  else{
-    
+      .then((pays) => {
+        if (pays !== null && pays !== undefined && pays.length > 0) {
+          // daha önceden işlem geçmiş
+          //dışarıdan gelen işlem
+          let lastPay = pays[0];
+          db.Payments.create({
+            from: lastPay.from,
+            to: lastPay.to,
+            status: 1,
+            type: lastPay.type,
+            amount: Number(clbData.Amnt),
+            btcAmt: isNaN(Number(clbData.BTC)) ? 0 : Number(clbData.BTC),
+            creatorUserId: lastPay.creatorUserId,
+            createdAt: new Date(),
+            processID: lastPay.processID,
+            name: lastPay.name,
+            tc: lastPay.tc,
+            txID: clbData.TxID,
+          })
+            .then(() => {
+              return res.json({
+                status: 1,
+              });
+            })
+            .catch((err) => {
+              return res.status(500).json({ err, msg: "DB error", status: 0 });
+            });
+        } else {
+          /// bulamadıysa bu processID nin callbackdir dışarıdan değildir.
+          db.Payments.update(
+            {
+              amount: Number(clbData.Amnt),
+              status: status !== null ? status : 1,
+              txID: clbData.TxID,
+              btcAmt: isNaN(Number(clbData.BTC)) ? 0 : Number(clbData.BTC),
+            },
+            {
+              where: {
+                processID: clbData.ProcessID,
+                type,
+                status: 0,
+                creatorUserId: Number(clbData.URefID),
+              },
+            }
+          )
+            .then(() => {
+              return res.json({
+                status: 1,
+              });
+            })
+            .catch((err) => {
+              return res.status(500).json({ err, msg: "DB error", status: 0 });
+            });
+        }
+      })
+      .catch((err) => {
+        return res.status(500).json({ err, msg: "DB error", status: 0 });
+      });
+  } else {
     //other payment system
     let uptDta = {
       amount: Number(clbData.Amnt),
-      status: status !== null ? status : 1
-    }
-    db.Payments.update(
-      uptDta,
-      {
-        where: {
-          processID: clbData.ProcessID,
-          type,
-          status:0,
-          creatorUserId: Number(clbData.URefID),
-        },
-      }
-    )
+      status: status !== null ? status : 1,
+    };
+    db.Payments.update(uptDta, {
+      where: {
+        processID: clbData.ProcessID,
+        type,
+        status: 0,
+        creatorUserId: Number(clbData.URefID),
+      },
+    })
       .then(() => {
         return res.json({
           status: 1,
@@ -500,10 +475,8 @@ app.post("/accept-payment", async (req, res) => {
       .catch((err) => {
         return res.status(500).json({ err, msg: "DB error", status: 0 });
       });
-  
   }
 
-  
   //TESTİNG
   //   db.Data.create({ data: data })
   //     .then(() => {
@@ -553,23 +526,19 @@ const checkValidIpAddress = (ip) => {
   const whiteList = payment_infos.whitelist;
   //for local testing
   // whiteList.push("::1");
-   //whiteList.push("::ffff:127.0.0.1");
-   whiteList.push('31.223.26.138')
+  //whiteList.push("::ffff:127.0.0.1");
+  whiteList.push("31.223.26.138");
   const find = whiteList.find((item) => item === ip);
   return find === undefined ? false : true;
 };
 
 const getClientIP = (req) => {
-
   const ipRaw = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
-  if(ipRaw.includes(","))
-  {
-
-    return ipRaw.split(",")[0]
-  }
-  else{
-    return ipRaw
+  if (ipRaw.includes(",")) {
+    return ipRaw.split(",")[0];
+  } else {
+    return ipRaw;
   }
 };
 
