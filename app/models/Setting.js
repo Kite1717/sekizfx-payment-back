@@ -1,8 +1,8 @@
 "use strict";
 
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define(
-    "User",
+  const Setting = sequelize.define(
+    "Setting",
     {
       id: {
         allowNull: false,
@@ -10,23 +10,18 @@ module.exports = (sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.INTEGER,
       },
-      email: {
-        allowNull: false,
+      name: {
         type: DataTypes.STRING,
       },
-      password: {
-        allowNull: false,
-        type: DataTypes.STRING,
-      },
-      authSign: {
+      status: {
         type: DataTypes.BOOLEAN,
       },
     },
     {
-      tableName: "users",
+      tableName: "settings",
       timestamps: false,
     }
   );
 
-  return User;
+  return Setting;
 };

@@ -49,4 +49,101 @@ app.post("/login", async (req, res) => {
     });
 });
 
+
+
+// get auth sign
+app.post("/auth-sign", async (req, res) => {
+
+  const {email} = req.body;
+   db.User.findOne({
+    where:{
+      email ,
+    }
+  }).then((user) => {
+
+    if(user)
+    {
+      return res.json({
+       status : 1,
+       authSign : user.authSign
+      });
+    }
+    else{
+      return res.status(500).json({ msg : "User not Found" , status : 0});
+    }
+     
+    })
+    .catch((err) => {
+      return res.status(500).json({err :err , msg : "DB error" , status : 0});
+    });
+});
+
+// get all settting
+app.get("/setting/all", async (req, res) => {
+
+  db.Setting.findAll().then((settings) => {
+    
+        return res.json({
+         status : 1,
+         settings,
+        });
+     
+    })
+    .catch((err) => {
+      return res.status(500).json({err :err , msg : "DB error" , status : 0});
+    });
+});
+
+
+// get all settting
+app.get("/setting/:name", async (req, res) => {
+
+  console.log("asdasdasdas")
+  db.Setting.findOne({
+    where : {
+      name : req.params.name
+    }
+  }).then((setting) => {
+    
+        return res.json({
+         status : 1,
+         setting,
+        });
+     
+    })
+    .catch((err) => {
+      return res.status(500).json({err :err , msg : "DB error" , status : 0});
+    });
+});
+
+
+
+// get all settting
+app.put("/setting/update", async (req, res) => {
+
+  const data = req.body
+  db.Setting.update(data,{
+    where:{
+      name: data.name
+    }
+  }).then(() => {
+    
+        return res.json({
+         status : 1,
+        });
+     
+    })
+    .catch((err) => {
+      return res.status(500).json({err :err , msg : "DB error" , status : 0});
+    });
+});
+
+
+
+
+
+
+
+
+
 module.exports = app;
