@@ -69,23 +69,29 @@ app.post("/deposit", async (req, res) => {
 
   let BCID = "";
   let baseUrl = "";
+  let BCSubID = "";
 
   //security control
-  if (from.id === 1 && from.key === ANINDA_KREDI_KARTI_BCSUBID) {
+  if (from.id === 1 ) {
     BCID = ANINDA_KREDI_KARTI_BCID;
     baseUrl = ANINDA_KREDI_KARTI;
-  } else if (from.id === 2 && from.key === ANINDA_HAVALE_BCSUBID) {
+    BCSubID = ANINDA_KREDI_KARTI_BCSUBID;
+  } else if (from.id === 2) {
     BCID = ANINDA_HAVALE_BCID;
     baseUrl = ANINDA_HAVALE;
-  } else if (from.id === 3 && from.key === JET_PAPARA_BCSUBID) {
+    BCSubID = ANINDA_HAVALE_BCSUBID;
+  } else if (from.id === 3 ) {
     BCID = JET_PAPARA_BCID;
     baseUrl = JET_PAPARA;
-  } else if (from.id === 4 && from.key === ANINDA_MEFETE_BCSUBID) {
+    BCSubID = JET_PAPARA_BCSUBID;
+  } else if (from.id === 4) {
     BCID = ANINDA_MEFETE_BCID;
     baseUrl = ANINDA_MEFETE;
-  } else if (from.id === 5 && from.key === ANINDA_BTC_BCSUBID) {
+    BCSubID = ANINDA_MEFETE_BCSUBID;
+  } else if (from.id === 5) {
     BCID = ANINDA_BTC_BCID;
     baseUrl = ANINDA_BTC;
+    BCSubID = ANINDA_BTC_BCSUBID;
   } else {
     return res.status(500).json({ msg: "SECURITY AUTH ERROR", status: 0 });
   }
@@ -109,7 +115,7 @@ app.post("/deposit", async (req, res) => {
 
   url += querystring.stringify({
     BUID: userId.toString().trim(),
-    BCSubID: from.key,
+    BCSubID,
     Name: name.trim(),
     TC: tc.toString().trim(),
     PGTransactionID: PGTransactionID.trim(),
@@ -157,6 +163,80 @@ app.post("/deposit", async (req, res) => {
     });
 });
 
+
+//withdraw request
+app.post("/wd-request", async (req, res) => {
+  const { name, userId, tc, amount, from, to, iban, bankId } = req.body;
+
+  db.WReq.create({
+    from: from.title,
+    to,
+    amount,
+    userId: userId,
+    createdAt: new Date(),
+    name,
+    tc,
+    iban,
+    bankId,
+  })
+    .then(() => {
+      return res.json({
+        status: 1,
+      });
+    })
+    .catch((err) => {
+      return res.json({ err, msg: "DB error", status: 0 });
+    });
+});
+
+
+//get withdraw requests
+
+
+//status 0 pending
+//status 1 accept
+//status 2 cancel
+app.get("/all-wd-request", async (req, res) => {
+  db.WReq.findAll({
+    order: [["id", "DESC"]],
+  })
+    .then((reqs) => {
+      return res.json({
+        status: 1,
+        requests: reqs,
+      });
+    })
+    .catch(() => {
+      return res.status(500).json({ msg: "DB error", status: 0 });
+    });
+});
+
+
+//cancel request
+app.put("/update-wd-request", async (req, res) => {
+  const {id,status} = req.body;
+  db.WReq.update({
+    status,
+
+  },{
+    where: {
+      id,
+    }
+  })
+    .then(() => {
+      return res.json({
+        status: 1,
+      });
+    })
+    .catch(() => {
+      return res.status(500).json({ msg: "DB error", status: 0 });
+    });
+});
+
+
+
+
+//with draw process
 app.post("/withdraw", async (req, res) => {
   const { name, userId, tc, amount, from, to, iban, bankId } = req.body;
 
@@ -184,23 +264,29 @@ app.post("/withdraw", async (req, res) => {
 
   let BCID = "";
   let baseUrl = "";
+  let BCSubID = "";
 
   //security control
-  if (from.id === 1 && from.key === ANINDA_KREDI_KARTI_BCSUBID) {
+  if (from.id === 1 ) {
     BCID = ANINDA_KREDI_KARTI_BCID;
     baseUrl = ANINDA_KREDI_KARTI;
-  } else if (from.id === 2 && from.key === ANINDA_HAVALE_BCSUBID) {
+    BCSubID = ANINDA_KREDI_KARTI_BCSUBID;
+  } else if (from.id === 2) {
     BCID = ANINDA_HAVALE_BCID;
     baseUrl = ANINDA_HAVALE;
-  } else if (from.id === 3 && from.key === JET_PAPARA_BCSUBID) {
+    BCSubID = ANINDA_HAVALE_BCSUBID;
+  } else if (from.id === 3 ) {
     BCID = JET_PAPARA_BCID;
     baseUrl = JET_PAPARA;
-  } else if (from.id === 4 && from.key === ANINDA_MEFETE_BCSUBID) {
+    BCSubID = JET_PAPARA_BCSUBID;
+  } else if (from.id === 4) {
     BCID = ANINDA_MEFETE_BCID;
     baseUrl = ANINDA_MEFETE;
-  } else if (from.id === 5 && from.key === ANINDA_BTC_BCSUBID) {
+    BCSubID = ANINDA_MEFETE_BCSUBID;
+  } else if (from.id === 5) {
     BCID = ANINDA_BTC_BCID;
     baseUrl = ANINDA_BTC;
+    BCSubID = ANINDA_BTC_BCSUBID;
   } else {
     return res.status(500).json({ msg: "SECURITY AUTH ERROR", status: 0 });
   }
@@ -220,7 +306,7 @@ app.post("/withdraw", async (req, res) => {
 
   url += querystring.stringify({
     BUID: userId.toString().trim(),
-    BCSubID: from.key,
+    BCSubID,
     Name: name.trim(),
     TC: tc.toString().trim(),
     IBAN: iban.toString().trim(),

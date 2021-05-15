@@ -17,9 +17,15 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      authSign: {
-        defaultValue : false,
+      qr_code: {
+        defaultValue :false,
         type: Sequelize.BOOLEAN,
+      },
+      qr_code_image: {
+        type: Sequelize.STRING,
+      },
+      qr_code_secret: {
+        type: Sequelize.STRING,
       },
     });
   },

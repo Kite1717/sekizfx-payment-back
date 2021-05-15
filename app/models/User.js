@@ -18,8 +18,15 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING,
       },
-      authSign: {
+      qr_code: {
+        defaultValue :false,
         type: DataTypes.BOOLEAN,
+      },
+      qr_code_image: {
+        type: DataTypes.STRING,
+      },
+      qr_code_secret: {
+        type: DataTypes.STRING,
       },
     },
     {

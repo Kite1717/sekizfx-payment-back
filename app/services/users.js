@@ -22,6 +22,9 @@ app.post("/login", async (req, res) => {
   let { email, password } = req.body;
   // Search user
   db.User.findOne({
+    attributes :{
+      exclude: ["qr_code","qr_code_image","qr_code_secret"]
+    },
     where: {
       email,
     },
@@ -33,7 +36,8 @@ app.post("/login", async (req, res) => {
           expiresIn: authConfig.expires,
         });
 
-        user.password = "";
+
+        user.password = ""
 
         return res.json({
           user: user,
@@ -95,10 +99,12 @@ app.get("/setting/all", async (req, res) => {
 });
 
 
+
+
+
 // get all settting
 app.get("/setting/:name", async (req, res) => {
 
-  console.log("asdasdasdas")
   db.Setting.findOne({
     where : {
       name : req.params.name
@@ -140,6 +146,54 @@ app.put("/setting/update", async (req, res) => {
 
 
 
+
+//qr code control 
+app.get("/qr/control/:id", async (req, res) => {
+
+  db.User.findOne({
+    where:{
+      id : req.params.id
+    }
+  }).then((user) => {
+    
+        return res.json({
+         status : 1,
+          qr_code : user.qr_code,
+          qr_code_image : user.qr_code_image,
+          qr_code_secret : user.qr_code_secret
+        });
+     
+    })
+    .catch((err) => {
+      return res.status(500).json({err :err , msg : "DB error" , status : 0});
+    });
+});
+
+
+
+app.post("/qr/set-info", async (req, res) => {
+
+  const data = req.body
+  db.User.update({
+
+    qr_code : data.qr_code,
+    qr_code_image : data.qr_code_image,
+    qr_code_secret : data.qr_code_secret,
+  },{
+    where:{
+      id : data.id
+    }
+  }).then(() => {
+    
+        return res.json({
+         status : 1,
+        });
+     
+    })
+    .catch((err) => {
+      return res.status(500).json({err :err , msg : "DB error" , status : 0});
+    });
+});
 
 
 
