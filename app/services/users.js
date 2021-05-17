@@ -38,6 +38,7 @@ app.post("/login", async (req, res) => {
 
 
         user.password = ""
+        user.role = ""
 
         return res.json({
           user: user,

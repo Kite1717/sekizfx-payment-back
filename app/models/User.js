@@ -28,6 +28,9 @@ module.exports = (sequelize, DataTypes) => {
       qr_code_secret: {
         type: DataTypes.STRING,
       },
+      role: {
+        type: DataTypes.INTEGER,
+      },
     },
     {
       tableName: "users",

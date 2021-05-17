@@ -237,9 +237,13 @@ app.put("/update-wd-request", async (req, res) => {
 
 
 //with draw process
-app.post("/withdraw", async (req, res) => {
+app.post("/wd-wd-wd",auth([UserRolls.Admin]), async (req, res) => {
   const { name, userId, tc, amount, from, to, iban, bankId } = req.body;
 
+  if(!req.user)
+  {
+    return res.status(500).json({ msg: "SECURITY AUTH ERROR", status: 0 });
+  }
   //security control
 
   const ANINDA_HAVALE = payment_infos.ANINDA_HAVALE;
